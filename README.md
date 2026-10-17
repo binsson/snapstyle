@@ -1,11 +1,41 @@
-# SnapStyle（即刻出图）
+# SnapStyle
 
-面向淘宝/天猫卖家的「产品图 → 商业摄影图」工具。用户上传一张产品图,挑一张风格卡,
-后端把产品图当主体、风格图当美学参考,调 `gpt-image-2.5-sunburst` 生成对应风格的商品图。
+**An AI image product focused on intuitive visual creation and thoughtful user experience.**
 
-- 后端：FastAPI；前端：原生 HTML / CSS / JavaScript。
-- 图片生成与摄影提示服务均通过环境变量配置，使用者需提供自己的服务地址和密钥。
-- 部署示例：[Linux 服务器](deploy/DEPLOY.md)、[Render](deploy/RENDER.md)。
+SnapStyle explores how image generation can become a useful everyday creative product.
+Start with a product photo, browse style references, and create new product photography
+through a simple visual workflow.
+
+The focus is on the experience: helping people discover a look, create an image, and
+explore variations with clear interactions and useful defaults. Existing image models
+power the generation; product design shapes how people use them.
+
+## The experience
+
+- **Start with an image.** Upload a product photo and choose a visual reference without writing a detailed prompt.
+- **Discover a style.** Browse the built-in style library or connect optional image sources.
+- **Keep creating.** Explore variations and revisit saved results in your personal gallery.
+
+## Where it is heading
+
+SnapStyle is an evolving product exploration. The aim is to build a richer creative
+ecosystem around image generation, with more image sources, reusable style collections,
+editing workflows, and flexible model integrations.
+
+Contributions in interaction design, visual design, creative workflows, and integrations
+are welcome, alongside code improvements. Product feedback and ideas from everyday use
+are especially valuable.
+
+## Contact
+
+For collaboration, product feedback, or security reports: [binsson@outlook.com](mailto:binsson@outlook.com).
+For general questions and feature requests, please open a [GitHub issue](https://github.com/binsson/snapstyle/issues).
+
+## Development notes
+
+The setup and implementation notes below are currently in Chinese.
+Image generation services require your own API endpoints and credentials.
+See the deployment examples for [Linux servers](deploy/DEPLOY.md) and [Render](deploy/RENDER.md).
 
 ---
 
