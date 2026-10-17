@@ -245,5 +245,9 @@ This repository starts from a sanitized snapshot. Do not merge private developme
 that could reintroduce deployment details. Review hosted workflow logs and release
 attachments separately before changing repository visibility.
 
-An open-source license has not yet been selected. A `LICENSE` file must be added before
-presenting the project as an open-source release.
+## License
+
+The project code is licensed under the [MIT License](LICENSE), copyright 2026 binsson.
+Use, modification, redistribution, and commercial use are permitted with the copyright
+and permission notices retained. Third-party dependencies and reference images remain
+subject to their respective rights and licenses; the code license does not replace them.
