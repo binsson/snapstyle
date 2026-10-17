@@ -1,44 +1,47 @@
-# 部署到 Render
+# Deploy to Render
 
-本文使用通用配置，不包含现有服务、域名或部署记录。
+This guide uses generic examples, without private service identifiers or deployment records.
 
-## 1. 新建 Web Service
+## 1. Create a Web Service
 
-连接自己的代码仓库，选择部署分支，并配置：
+Connect your repository, choose a deployment branch, and configure:
 
-- Build Command：`pip install -r requirements.txt`
-- Start Command：`python3 server.py`
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `python3 server.py`
 
-按托管平台要求配置 `PORT`。环境变量中填写自己的配置：
+Set `PORT` as required by the hosting platform and provide your own environment settings:
 
-| 变量 | 说明 |
+| Variable | Configuration |
 |---|---|
 | `APP_ENV` | `production` |
-| `API_BASE` | 自己的图片服务基础地址，通常含 `/v1` |
-| `API_KEY` | 自己的图片服务密钥 |
-| `IMAGE_API_PROVIDER` | `openai` 或 `toapis`，按实际接口选择 |
-| `MODEL` | 服务支持的图片模型 |
-| `IMAGE_SIZE_ENABLED` | 默认 `0`，按服务能力调整 |
-| `REWRITE_API_BASE` | 独立摄影提示服务地址；留空共用 `API_BASE` |
-| `REWRITE_API_KEY` | 对应提示服务密钥；留空共用 `API_KEY` |
-| `REWRITE_MODEL` | 服务支持的视觉模型 |
-| `DATABASE_URL` | 账户模式的 Postgres 连接串，可选 |
-| `SESSION_SECRET` | 随机长字符串；生产账户模式必填 |
-| `APP_USERNAME` / `APP_PASSWORD` | 未使用账户模式时的登录配置 |
-| `PINTEREST_SCRAPE` | 默认 `0`，开启要求见 README |
+| `API_BASE` | Your image API base URL, usually including `/v1`. |
+| `API_KEY` | Your image service credential. |
+| `IMAGE_API_PROVIDER` | `openai` or `toapis`, matching your provider's interface. |
+| `MODEL` | A model supported by your image service. |
+| `IMAGE_SIZE_ENABLED` | Defaults to `0`; adjust to your service's capabilities. |
+| `REWRITE_API_BASE` | Optional separate guidance endpoint; falls back to `API_BASE`. |
+| `REWRITE_API_KEY` | Corresponding guidance credential; falls back to `API_KEY`. |
+| `REWRITE_MODEL` | A vision model supported by your guidance service. |
+| `DATABASE_URL` | Optional Postgres connection string for account mode. |
+| `SESSION_SECRET` | Long random secret; required for production account mode. |
+| `APP_USERNAME` / `APP_PASSWORD` | Shared authentication when account mode is disabled. |
+| `PINTEREST_SCRAPE` | Defaults to `0`; see the [README](../README.md#optional-image-sources) before enabling. |
 
-不需要摄影提示服务时设置 `REWRITE_ENABLED=0`，已有风格使用本地拍摄提示词。
-密钥仅在托管平台环境变量中保存。不要把 Environment 页面截图、日志或配置导出提交到仓库。
+If guidance is unnecessary, set `REWRITE_ENABLED=0` to use local briefs for existing styles.
+Store secrets in the hosting platform's environment settings. Keep screenshots of those
+settings, logs, and configuration exports out of the repository.
 
-## 2. 域名与持久化
+## 2. Domain and persistence
 
-如需自定义域名，在 Render 的 Custom Domains 中添加自己的域名，按照服务控制台给出的
-DNS 记录配置并验证 HTTPS。`PUBLIC_BASE_URL` 可设为自己的 HTTPS 网站地址。
+For a custom domain, add it under Custom Domains, configure the DNS records shown in the
+service dashboard, and verify HTTPS. Set `PUBLIC_BASE_URL` to your public HTTPS URL if needed.
 
-为运行数据库和用户新增图片配置持久化存储，或改用外部数据库与对象存储。
-不要假定实例本地文件会跨部署保留；部署前备份运行时数据。
+Provide persistent storage for runtime databases and user-added images, or adapt the
+application to use external databases and object storage. Do not assume local instance
+files survive deployment; back up runtime data before updates.
 
-## 3. 核验
+## 3. Verification
 
-确认 HTTPS 首页与 `/api/auth-status` 可访问，登录和风格图库正常；
-使用自己的服务配置验证一次图片生成。不要在核验日志中输出凭据或连接串。
+Check the HTTPS homepage and `/api/auth-status`, then verify login and the style library.
+Run a generation with your own service configuration and inspect the result. Avoid printing
+credentials or database connection strings in verification logs.
