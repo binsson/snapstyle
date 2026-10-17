@@ -1,0 +1,70 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Legacy local rate-limit state (no longer used)
+usage_db.json
+style_clusters.json
+
+# SQLite database (runtime sessions, rate limits, style assets).
+# style_assets.json (NOT ignored) is the source of truth shipped via git;
+# SQLite is hydrated from it on startup via migrate_from_json.
+aid.db
+aid.db-wal
+aid.db-shm
+
+# Runtime user uploads (ephemeral, regenerated per request) — but keep:
+#   styles/       ingested style references (shipped with style_assets.json)
+#   styles_inbox/ admin drop folder for new ingest batches (keep .gitkeep only)
+reference_uploads/*
+!reference_uploads/templates/
+!reference_uploads/templates/**
+!reference_uploads/styles/
+!reference_uploads/styles/**
+# Saved stock reference picks: created at runtime by /api/stock/use. A local
+# personal library (indexed in aid.db, also gitignored) — never committed.
+reference_uploads/styles/stock/
+!reference_uploads/styles_inbox/
+reference_uploads/styles_inbox/*
+!reference_uploads/styles_inbox/.gitkeep
+
+# Tunneling binaries (too big for the repo)
+bore
+cloudflared
+
+# Local environment overrides
+.env
+.envrc
+.env.*
+!.env.example
+*.env
+!*.env.example
+
+# Credentials, browser sessions, logs and local backups
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+cookies*.txt
+cookies*.json
+*.cookies
+*.log
+logs/
+backups/
+private/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+
+# Editor / agent local config
+.claude/
+.agents/
+.codex
+.DS_Store

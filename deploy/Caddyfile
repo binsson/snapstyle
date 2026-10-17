@@ -1,0 +1,17 @@
+# Caddy reverse proxy for example.com
+# Caddy auto-provisions and renews the HTTPS certificate (Let's Encrypt) —
+# nothing to configure beyond the domain names below.
+# Install location on the server: /etc/caddy/Caddyfile
+
+example.com {
+	reverse_proxy 127.0.0.1:8080
+	encode gzip
+
+	# Long-cache immutable style images; everything else default.
+	@styles path /reference_uploads/styles/*
+	header @styles Cache-Control "public, max-age=604800"
+}
+
+www.example.com {
+	redir https://example.com{uri} permanent
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>即刻出图</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' rx='4.5' fill='%23e60023'/><path d='M17 1 L7 12 L11 12 L5 23 L17 11 L13 11 Z' fill='%23ffffff'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="app-header">
+      <div class="app-title">
+        <svg class="app-logo" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M17 1 L7 12 L11 12 L5 23 L17 11 L13 11 Z" fill="#e60023"/>
+        </svg>
+        <span>即刻出图</span>
+      </div>
+      <div class="header-actions">
+        <!-- 即刻出图 mode is temporarily disabled — toggle was not mature
+             enough yet. Code path is kept in app.js/style.css for future
+             enable. To re-enable, just remove the `hidden` attribute. -->
+        <div class="mode-switcher" id="mode-switcher" role="tablist" hidden>
+          <button class="mode-chip active" data-top-mode="gallery">精选风格</button>
+          <button class="mode-chip" data-top-mode="quick">即刻出图</button>
+        </div>
+        <button class="header-icon-btn" id="btn-stock" title="从图库找参考图" aria-label="从图库找参考图" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        </button>
+        <div class="search-wrap" id="search-wrap">
+          <button class="search-icon-btn" id="btn-search-toggle" title="搜索风格" aria-label="搜索风格">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <input type="text" id="search-input" class="search-input" placeholder="搜索风格…" autocomplete="off" />
+        </div>
+      </div>
+      <!-- Account chip: shown only in accounts mode (email signup + credits).
+           Direct child of .app-header (not .header-actions) so on narrow
+           screens it can sit beside the title while search wraps to a
+           full-width second row. See the header media queries in style.css. -->
+      <div class="account-chip hidden" id="account-chip">
+        <span class="credit-pill" title="剩余额度">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4.5a1.5 1.5 0 0 1 0 3H9"/></svg>
+          <span id="credit-amount">—</span>
+        </span>
+        <button class="recharge-btn" id="recharge-btn">充值</button>
+        <button class="logout-btn" id="logout-btn" title="退出登录" aria-label="退出登录">退出</button>
+      </div>
+    </header>
+
+    <main class="gallery-main">
+      <!-- Category tabs (Pinterest style) -->
+      <nav class="category-tabs" id="category-tabs"></nav>
+
+      <!-- View: home (gallery of style cards) -->
+      <section class="view-pane" id="view-home">
+        <div class="gallery" id="template-grid"></div>
+        <div class="quick-panel" id="quick-panel" hidden>
+          <label class="quick-hero" id="quick-upload-zone">
+            <input type="file" id="quick-file-input" accept="image/*" hidden>
+            <div class="quick-hero-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+              <span>上传产品图</span>
+            </div>
+            <button class="quick-hero-clear" id="quick-upload-clear" hidden title="清除产品图">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+          </label>
+          <div class="quick-toolbar">
+            <div class="quick-count-grid" id="quick-count-grid">
+              <button data-count="1">1</button>
+              <button data-count="2">2</button>
+              <button data-count="3" class="active">3</button>
+              <button data-count="4">4</button>
+              <button data-count="5">5</button>
+              <button data-count="6">6</button>
+            </div>
+            <button class="quick-generate-btn" id="quick-generate-btn" disabled>生成</button>
+          </div>
+        </div>
+        <!-- Pinterest cards are appended directly to #template-grid so both
+             sources participate in one masonry layout. A second column
+             container would have to start below the tallest curated column
+             and leave a large empty band under every shorter column. -->
+        <div class="feed-status" id="pin-feed-status" hidden></div>
+        <div class="feed-sentinel" id="pin-feed-sentinel" aria-hidden="true"></div>
+      </section>
+
+      <!-- View: my works -->
+      <section class="view-pane" id="view-my" hidden>
+        <div class="my-tabs" id="my-tabs">
+          <button class="my-tab" data-my-tab="favorites">收藏</button>
+          <button class="my-tab active" data-my-tab="gallery">图库</button>
+        </div>
+        <div class="my-grid" id="my-grid"></div>
+        <div class="favorite-grid" id="favorite-grid" hidden></div>
+      </section>
+
+    </main>
+
+    <!-- Bottom dock: home / upload / describe / my works -->
+    <nav class="bottom-dock" id="bottom-dock">
+      <button class="dock-btn active" id="dock-home" title="主页" data-view="home">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l9 7v11h-6v-6h-6v6H3V10z"/></svg>
+      </button>
+      <button class="dock-btn" id="dock-upload" title="上传产品图">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button class="dock-btn" id="dock-my" title="我的作品" data-view="my">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        <img class="dock-avatar hidden" id="dock-avatar" alt="" />
+        <span class="dock-badge" id="dock-my-badge"></span>
+      </button>
+    </nav>
+
+    <input type="file" id="file-input" accept="image/*" hidden />
+
+    <!-- Lightbox -->
+    <div class="lightbox hidden" id="lightbox">
+      <img id="lightbox-img" src="" alt="" />
+      <div class="lightbox-actions" id="lightbox-actions" hidden>
+        <button class="lightbox-btn primary" id="lightbox-download">下载</button>
+        <button class="lightbox-btn" id="lightbox-regen">换一张</button>
+        <button class="lightbox-btn" id="lightbox-close">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock reference search (Pexels) -->
+  <div class="stock-overlay hidden" id="stock-overlay">
+    <div class="stock-panel">
+      <div class="stock-head">
+        <div class="stock-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="stock-input" placeholder="搜索图库参考图，如 street style、editorial fashion…" autocomplete="off" />
+        </div>
+        <button class="stock-toggle active" id="stock-enhance" title="开启后自动偏向日韩清新风（自然光 + 亚洲模特 + 清新休闲）">清新</button>
+        <button class="stock-close" id="stock-close" title="关闭" aria-label="关闭">关闭</button>
+      </div>
+      <div class="stock-sources" id="stock-sources" hidden>
+        <button data-source="pinterest">Pinterest</button>
+        <button data-source="pexels">Pexels</button>
+      </div>
+      <div class="stock-chips" id="stock-chips">
+        <button data-q="asian woman casual outfit natural light">通勤休闲</button>
+        <button data-q="asian woman summer outfit sunlight">夏日阳光</button>
+        <button data-q="asian woman cafe iced coffee natural light">咖啡馆</button>
+        <button data-q="asian woman street style casual outfit">街拍</button>
+        <button data-q="asian woman outdoor nature soft light">森系户外</button>
+        <button data-q="asian woman beige minimal clean outfit">米色极简</button>
+        <button data-q="candid asian woman spring sunny outfit">春日抓拍</button>
+        <button data-q="asian woman youthful campus casual">校园青春</button>
+      </div>
+      <div class="stock-status" id="stock-status">日韩清新精选，或输入关键词搜索，点选一张即可作为参考。</div>
+      <div class="stock-grid" id="stock-grid"></div>
+      <div class="stock-foot">
+        <button class="stock-more" id="stock-more" hidden>加载更多</button>
+      </div>
+      <div class="stock-credit">图片来源 <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></div>
+    </div>
+  </div>
+
+  <!-- Login overlay -->
+  <div class="login-overlay hidden" id="login-overlay">
+    <div class="login-card">
+      <div class="login-title">
+        <svg class="app-logo" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M17 1 L7 12 L11 12 L5 23 L17 11 L13 11 Z" fill="#e60023"/>
+        </svg>
+        <span>即刻出图</span>
+      </div>
+      <div class="login-subtitle" id="login-subtitle">请输入访问凭据</div>
+      <input id="login-username" type="text" placeholder="用户名" autocomplete="username" />
+      <input id="login-email" type="email" placeholder="邮箱" autocomplete="email" hidden />
+      <input id="login-password" type="password" placeholder="密码" autocomplete="current-password" />
+      <div class="turnstile-wrap" id="turnstile-wrap" hidden>
+        <div id="turnstile-widget"></div>
+      </div>
+      <button id="login-btn">进入</button>
+      <div class="login-error" id="login-error"></div>
+      <div class="login-switch" id="login-switch" hidden>
+        <span id="login-switch-text">还没有账号？</span>
+        <a href="#" id="login-switch-link">注册</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+requests>=2.32
+fastapi>=0.115
+uvicorn[standard]>=0.30
+Pillow>=10
+# Postgres driver for the email-account + credits system (Neon).
+# Only needed when DATABASE_URL is set; the app runs without it otherwise.
+psycopg[binary]>=3.2

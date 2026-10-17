@@ -1,0 +1,366 @@
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#000000;
+  --surface:#1a1a1a;
+  --surface2:#262626;
+  --border:#2a2a2a;
+  --border2:#3a3a3a;
+  --text:#f5f5f5;
+  --text2:#a0a0a0;
+  --text3:#666;
+  --accent:#ffffff;
+  --pinterest-red:#e60023;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --radius-card:22px;
+  --radius-banner:18px;
+}
+html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+.hidden{display:none!important}
+[hidden]{display:none!important}
+.app{min-height:100vh;display:flex;flex-direction:column;position:relative}
+
+/* Header */
+.app-header{display:flex;align-items:center;gap:18px;padding:18px 24px 8px;background:var(--bg);position:sticky;top:0;z-index:50}
+.app-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:8px}
+.app-logo{width:26px;height:26px;flex-shrink:0;display:block}
+
+/* Header icon buttons (top-right) */
+.header-actions{display:flex;gap:10px;align-items:center;margin-left:auto}
+.mode-switcher{display:flex;align-items:center;gap:2px;background:var(--surface);border-radius:21px;padding:4px;height:42px;box-sizing:border-box}
+.mode-chip{border:none;background:transparent;color:var(--text2);font-family:var(--font);font-size:13px;font-weight:500;padding:0 14px;height:34px;border-radius:17px;cursor:pointer;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.mode-chip:hover{color:var(--text)}
+.mode-chip.active{background:var(--accent);color:#000}
+.header-icon-btn{width:42px;height:42px;border-radius:50%;background:var(--surface);border:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.15s,transform 0.15s;flex-shrink:0;padding:0}
+.header-icon-btn:hover{background:var(--surface2);transform:translateY(-1px)}
+.header-icon-btn svg{width:20px;height:20px}
+
+/* Search popover (toggled from header icon) */
+/* Persistent search pill: always visible in the header, focusable on click.
+   The icon sits at the left as decoration (still clickable to focus input).
+   Suggestions dropdown anchors below the wrap. */
+.search-wrap{position:relative;display:flex;align-items:center;height:42px;width:300px;background:var(--surface);border-radius:21px;transition:background 0.15s,box-shadow 0.15s}
+.search-wrap:focus-within{background:var(--surface2);box-shadow:0 0 0 1px rgba(255,255,255,0.06)}
+.search-icon-btn{width:42px;height:42px;border-radius:50%;background:transparent;border:none;color:var(--text3);display:flex;align-items:center;justify-content:center;cursor:text;flex-shrink:0;padding:0}
+.search-icon-btn svg{width:18px;height:18px}
+.search-input{flex:1;min-width:0;background:transparent;border:none;padding:0 18px 0 0;color:var(--text);font-family:var(--font);font-size:16px;outline:none}
+.search-input::placeholder{color:var(--text3)}
+.search-suggestions{position:absolute;top:calc(100% + 8px);right:0;width:380px;max-width:calc(100vw - 32px);max-height:420px;overflow-y:auto;background:var(--surface);border-radius:18px;padding:8px;z-index:90;box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04)}
+.search-suggestions[hidden]{display:none}
+.search-suggestion{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;background:transparent;border:none;cursor:pointer;border-radius:12px;transition:background 0.15s;color:var(--text);font-family:var(--font);text-align:left}
+.search-suggestion:hover{background:var(--surface2)}
+.search-suggestion .search-thumb{width:40px;height:40px;border-radius:10px;flex-shrink:0;object-fit:cover}
+.search-suggestion .search-thumb-gradient{width:40px;height:40px;border-radius:10px;flex-shrink:0}
+.search-suggestion .search-text{flex:1;min-width:0}
+.search-suggestion .search-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.2}
+.search-suggestion .search-cat{font-size:11px;color:var(--text3);margin-top:2px}
+.search-empty{padding:16px;text-align:center;color:var(--text3);font-size:13px}
+
+/* Main */
+.gallery-main{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:8px 32px 120px;display:flex;flex-direction:column;gap:14px}
+
+/* Category tabs (Pinterest mobile style) */
+.category-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:0 4px;margin:0 -4px}
+.category-tabs::-webkit-scrollbar{display:none}
+.category-tab{background:transparent;border:none;color:var(--text2);font-family:var(--font);font-size:16px;font-weight:600;padding:8px 12px 12px;cursor:pointer;transition:color 0.15s;position:relative;white-space:nowrap;flex-shrink:0;border-radius:0;letter-spacing:-0.01em}
+.category-tab:hover{color:var(--text)}
+.category-tab.active{color:var(--text)}
+.category-tab.active::after{content:'';position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:2px;background:var(--text)}
+
+/* View panes */
+.view-pane{display:flex;flex-direction:column;gap:14px}
+.view-pane[hidden]{display:none}
+
+/* Onboarding tour */
+.tour-overlay{position:fixed;inset:0;z-index:600;pointer-events:auto;animation:tourFadeIn 0.3s ease}
+.tour-overlay.hidden{display:none!important}
+.tour-spotlight{position:fixed;z-index:601;border-radius:18px;box-shadow:0 0 0 9999px rgba(0,0,0,0.75);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);pointer-events:none}
+.tour-tooltip{position:fixed;z-index:602;background:#fff;color:#111;border-radius:16px;padding:20px 22px 16px;max-width:300px;box-shadow:0 12px 40px rgba(0,0,0,0.35);font-family:var(--font);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);animation:tourTooltipIn 0.35s ease}
+.tour-tooltip-step{font-size:11px;color:#999;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.tour-tooltip-title{font-size:16px;font-weight:700;color:#111;margin-bottom:4px;line-height:1.3}
+.tour-tooltip-desc{font-size:13px;color:#555;line-height:1.5;margin-bottom:16px}
+.tour-tooltip-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tour-dots{display:flex;gap:5px}
+.tour-dot{width:6px;height:6px;border-radius:50%;background:#ddd;transition:all 0.2s}
+.tour-dot.active{background:#111;width:16px;border-radius:3px}
+.tour-skip{background:none;border:none;color:#999;font-size:13px;cursor:pointer;font-family:var(--font);padding:6px 0;transition:color 0.15s}
+.tour-skip:hover{color:#555}
+.tour-next{background:#111;color:#fff;border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.tour-next:hover{background:#333}
+@keyframes tourFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes tourTooltipIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Quick-generate card — Photoroom/Lensa style: the product image (or
+   upload zone) IS the visual hero, occupying ~75% of the card. A thin
+   toolbar at the bottom holds count + generate. */
+.quick-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;width:380px;max-width:calc(100vw - 32px);background:#141414;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6)}
+
+.quick-hero{display:block;position:relative;width:100%;aspect-ratio:4/5;cursor:pointer;background-color:#1c1c1c;background-size:contain;background-position:center;background-repeat:no-repeat;overflow:hidden;transition:background-color 0.15s}
+.quick-hero:not(.has-image):hover{background-color:#242424}
+.quick-hero.has-image{background-color:#000;cursor:default}
+.quick-hero.has-image .quick-hero-empty{display:none}
+.quick-hero-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#6a6a6a;font-size:13px;font-weight:500}
+.quick-hero-empty svg{width:32px;height:32px}
+.quick-hero-clear{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,0.55);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;backdrop-filter:blur(8px);transition:background 0.15s}
+.quick-hero-clear[hidden]{display:none}
+.quick-hero-clear:hover{background:rgba(0,0,0,0.8)}
+
+.quick-toolbar{display:flex;align-items:center;gap:8px;padding:12px}
+.quick-count-grid{display:flex;background:#1f1f1f;padding:3px;border-radius:10px;flex:1}
+.quick-count-grid button{flex:1;background:transparent;border:none;color:#9a9a9a;font-family:var(--font);font-size:13px;font-weight:500;height:30px;border-radius:8px;cursor:pointer;transition:color 0.12s,background 0.12s}
+.quick-count-grid button:hover{color:#fff}
+.quick-count-grid button.active{background:#fff;color:#000;font-weight:600}
+.quick-generate-btn{flex-shrink:0;height:36px;padding:0 18px;background:#fff;color:#000;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s}
+.quick-generate-btn:disabled{background:#2a2a2a;color:#666;cursor:not-allowed}
+.quick-generate-btn:not(:disabled):hover{background:#e8e8e8}
+
+/* Dim the gallery + tabs behind the floating quick-panel for visual depth.
+   Lock body scroll so the dimmed background doesn't move when the user
+   scrolls — keeps focus on the quick-panel. */
+html.quick-mode,body.quick-mode{overflow:hidden;height:100vh}
+body.quick-mode .gallery-main{overflow:hidden;max-height:100vh}
+body.quick-mode .gallery{opacity:0.32;filter:blur(2px);pointer-events:none;user-select:none;overflow:hidden;max-height:calc(100vh - 120px)}
+body.quick-mode .category-tabs{opacity:0.32;pointer-events:none}
+body.quick-mode .bottom-dock{display:none}
+
+/* Inspiration masonry */
+.gallery{column-count:5;column-gap:18px}
+/* Empty state when a header search matches nothing — span all masonry columns */
+.gallery-empty{column-span:all;padding:48px 24px;text-align:center;color:var(--text2);font-size:14px}
+.template-card{position:relative;width:100%;margin:0 0 16px;border-radius:var(--radius-card);cursor:pointer;padding:0;display:inline-flex;flex-direction:column;justify-content:flex-end;overflow:hidden;break-inside:avoid;vertical-align:top;transition:transform 0.18s,box-shadow 0.18s,opacity 0.2s}
+.template-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.template-card:active{transform:translateY(0)}
+.template-card.disabled{opacity:0.45;cursor:not-allowed;pointer-events:none;filter:saturate(0.5)}
+.template-card .tc-meta{display:none}
+.template-card .tc-name{font-size:14px;font-weight:700;letter-spacing:-0.01em;line-height:1.2;margin-bottom:2px;position:relative;z-index:1}
+.template-card .tc-subtitle{font-size:11px;opacity:0.85;line-height:1.3;position:relative;z-index:1}
+.template-card.has-sample::before{display:none}
+.template-card.has-sample .tc-name,.template-card.has-sample .tc-subtitle{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.5)}
+.template-fav-btn{position:absolute;bottom:10px;right:10px;z-index:2;min-width:34px;height:32px;padding:0 10px 0 8px;gap:5px;border-radius:16px;border:none;background:rgba(0,0,0,0.42);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;opacity:0.92;transition:opacity 0.16s,background 0.16s,transform 0.16s;backdrop-filter:blur(8px);font-family:var(--font);font-size:12px;font-weight:600;line-height:1}
+.template-card:hover .template-fav-btn,.template-fav-btn.active{opacity:1}
+.template-fav-btn:hover{background:rgba(0,0,0,0.65);transform:scale(1.04)}
+.template-fav-btn svg{width:16px;height:16px;display:block;fill:none;flex-shrink:0}
+.template-fav-btn .fav-count{display:inline-block;line-height:1}
+.template-fav-btn.active{background:#fff;color:#e60023}
+.template-fav-btn.active svg{fill:currentColor}
+
+/* My works grid (same auto-fill grid) */
+.my-tabs{display:flex;align-items:center;gap:4px;align-self:center;background:var(--surface);border-radius:999px;padding:4px;margin:0 auto 2px}
+.my-tab{border:none;border-radius:999px;background:transparent;color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;line-height:1;padding:10px 22px;cursor:pointer;transition:background 0.16s,color 0.16s}
+.my-tab:hover{color:var(--text)}
+.my-tab.active{background:#fff;color:#111}
+.favorite-grid{width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;column-width:auto;column-gap:0}
+.favorite-grid.empty{display:block}
+.favorite-grid .template-card{display:flex;margin:0}
+.my-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.my-empty{padding:48px 24px;text-align:center;color:var(--text2);font-size:14px;background:var(--surface);border-radius:var(--radius-card);border:1px dashed var(--border2)}
+.my-card{position:relative;aspect-ratio:0.72;border-radius:var(--radius-card);overflow:hidden;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,0.4);transition:transform 0.18s,box-shadow 0.18s}
+.my-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.my-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+.my-card-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--surface);color:var(--text2)}
+.my-card-loading .loader-dots{margin-bottom:2px}
+.my-card-loading .my-card-stage{font-size:13px;color:var(--text2);transition:opacity 0.3s;min-height:1.2em;text-align:center}
+.my-card-loading .my-card-tpl{font-size:11px;color:var(--text3);margin-top:2px}
+.my-card-error{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#1a0a0a;color:#ff8a80;padding:12px;text-align:center}
+.my-card-error-title{font-size:13px;font-weight:600}
+.my-card-error-msg{font-size:11px;opacity:0.85;line-height:1.4}
+.my-card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity 0.2s}
+.my-card:hover .my-card-actions{opacity:1}
+/* Touch devices have no hover — the action buttons must always be visible,
+   otherwise download/regenerate/delete are unreachable on mobile. */
+@media (hover:none){.my-card-actions{opacity:1}}
+.my-card-label{position:absolute;left:10px;bottom:8px;padding:4px 10px;border-radius:50px;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:600;z-index:2}
+
+/* Bottom dock — three separate circular buttons (Pinterest mobile style) */
+.bottom-dock{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:14px;z-index:60;padding:0;background:transparent}
+.dock-btn{width:60px;height:60px;border-radius:18px;background:#161616;border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.18s,transform 0.18s;position:relative;flex-shrink:0;padding:0}
+.dock-btn:hover{background:#232323;transform:translateY(-2px)}
+.dock-btn.active{background:#232323}
+.dock-btn svg{width:26px;height:26px}
+.dock-btn .dock-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#333;border:2px solid transparent}
+.dock-btn.active .dock-avatar{border-color:#fff}
+.dock-thumb{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block;border:2px solid rgba(255,255,255,0.18)}
+.dock-thumb-clear{position:absolute;top:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.4);border:1.5px solid #161616;transition:transform 0.12s,background 0.12s;z-index:2}
+.dock-thumb-clear:hover{transform:scale(1.12);background:#fbe5e5}
+.dock-thumb-clear svg{display:block}
+.dock-badge{position:absolute;top:2px;right:2px;min-width:20px;height:20px;border-radius:10px;background:var(--pinterest-red);color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #000;line-height:1;letter-spacing:-0.02em;font-family:var(--font);font-variant-numeric:tabular-nums}
+.dock-btn.has-badge .dock-badge{display:flex}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:zoom-out;animation:fadeIn 0.15s;overflow:auto;padding:32px}
+.lightbox img{max-width:94vw;max-height:80vh;border-radius:8px}
+.lightbox-actions{display:flex;gap:10px;cursor:default}
+.lightbox-btn{border:none;border-radius:21px;height:42px;padding:0 22px;background:rgba(255,255,255,0.12);backdrop-filter:blur(6px);color:#fff;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;transition:background 0.15s}
+.lightbox-btn:hover{background:rgba(255,255,255,0.22)}
+.lightbox-btn.primary{background:var(--accent);color:#000}
+
+/* Loading dots */
+.loader-dots{display:flex;gap:4px}
+.loader-dots span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:dotPulse 1.2s ease-in-out infinite}
+.loader-dots span:nth-child(2){animation-delay:0.15s}
+.loader-dots span:nth-child(3){animation-delay:0.3s}
+@keyframes dotPulse{0%,80%,100%{opacity:0.3;transform:scale(0.8)}40%{opacity:1;transform:scale(1.1)}}
+
+/* Image action buttons (on my-card) */
+.img-action-btn{width:32px;height:32px;border:none;border-radius:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.img-action-btn:hover{background:rgba(0,0,0,0.8)}
+
+/* Toast */
+.toast-wrap{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;align-items:center;gap:8px}
+.toast{padding:10px 20px;background:rgba(245,245,245,0.96);color:#000;border-radius:50px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.4);animation:toastIn 0.25s ease;backdrop-filter:blur(6px)}
+.toast.error{background:#c41e1e;color:#fff}
+.toast.success{background:#1e7c3a;color:#fff}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Login overlay (dark) */
+.login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.94);backdrop-filter:blur(20px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s}
+.login-card{background:var(--surface);border-radius:20px;padding:32px;width:340px;max-width:calc(100vw - 32px);display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.login-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.02em;display:flex;align-items:center;justify-content:center;gap:8px}
+.login-subtitle{font-size:13px;color:var(--text2);text-align:center;margin-bottom:8px}
+/* 16px minimum: iOS Safari auto-zooms the page when focusing inputs below 16px */
+.login-card input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-family:var(--font);font-size:16px;outline:none;transition:border-color 0.15s}
+.login-card input:focus{border-color:var(--text2)}
+.login-card input::placeholder{color:var(--text3)}
+.turnstile-wrap{display:flex;justify-content:center;min-height:65px}
+.turnstile-wrap[hidden]{display:none}
+#login-btn{margin-top:6px;background:var(--accent);color:#000;border:none;border-radius:24px;padding:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.15s}
+#login-btn:hover{opacity:0.85}
+#login-btn:active{transform:scale(0.98)}
+#login-btn:disabled{opacity:0.5;cursor:not-allowed}
+.login-error{font-size:13px;color:#ff6e6e;min-height:18px;text-align:center}
+.login-switch{font-size:13px;color:var(--text2);text-align:center}
+.login-switch a{color:var(--text);font-weight:600;text-decoration:none;margin-left:4px;cursor:pointer}
+.login-switch a:hover{text-decoration:underline}
+
+/* Account chip (accounts mode): credit balance + recharge + logout */
+.account-chip{display:flex;align-items:center;gap:8px;height:42px}
+.account-chip.hidden{display:none}
+.credit-pill{display:inline-flex;align-items:center;gap:5px;height:42px;padding:0 14px;background:var(--surface);border-radius:21px;color:var(--text);font-size:14px;font-weight:700;box-sizing:border-box}
+.credit-pill svg{color:#ffd24a;flex-shrink:0}
+.recharge-btn{height:42px;padding:0 16px;background:var(--pinterest-red);color:#fff;border:none;border-radius:21px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.15s,transform 0.15s}
+.recharge-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.recharge-btn:active{transform:scale(0.98)}
+.logout-btn{height:42px;padding:0 14px;background:var(--surface);color:var(--text2);border:none;border-radius:21px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s,color 0.15s}
+.logout-btn:hover{background:var(--surface2);color:var(--text)}
+
+/* Gallery column breakpoints — fewer columns on narrower screens, keep
+   the masonry tidy without leaving a tall empty trailing column. */
+@media(max-width:1280px){
+  .gallery{column-count:4}
+}
+@media(max-width:1024px){
+  .gallery{column-count:3}
+}
+
+/* ── Header: collapse to two rows once a single row gets tight ──
+   The header packs three control groups — search, credit pill, and
+   recharge/logout — plus the title. They fit one row on wide screens,
+   but below ~768px that crushes the search box and overflows the
+   account buttons, so we split into two rows:
+     Row 1  →  title  +  account chip (credit / 充值 / 退出)
+     Row 2  →  search (full width)
+   .account-chip is a direct child of .app-header, and `order` reorders the
+   flex flow so it lands on row 1 beside the title while .header-actions
+   wraps to its own full-width row below. */
+@media(max-width:768px){
+  .app-header{flex-wrap:wrap;gap:10px 12px}
+  .app-title{white-space:nowrap;order:0;flex-shrink:0}
+  .account-chip{order:1;margin-left:auto}
+  .header-actions{order:2;width:100%;margin-left:0}
+  .search-wrap{flex:1;width:auto;min-width:0}
+  .search-suggestions{width:calc(100vw - 24px);right:-12px}
+}
+
+@media(max-width:640px){
+  .app-header{padding:14px 16px 6px}
+  .app-title{font-size:20px}
+  .app-logo{width:24px;height:24px}
+  .header-icon-btn{width:38px;height:38px}
+  .header-icon-btn svg{width:18px;height:18px}
+  /* Compact the account row so title + credit + 充值 + 退出 share one line
+     down to ~340px-wide phones without clipping. Search keeps its full
+     size — it now owns a whole row, so there's room. */
+  .account-chip{gap:6px;height:38px}
+  .credit-pill{height:38px;padding:0 11px;font-size:13px}
+  .recharge-btn{height:38px;padding:0 13px}
+  .logout-btn{height:38px;padding:0 11px}
+  .gallery-main{padding:6px 12px 110px;gap:12px}
+  .gallery{column-count:2;column-gap:10px}
+  .template-card{margin-bottom:10px}
+  .favorite-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .my-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .category-tab{font-size:15px;padding:8px 10px 12px}
+  .category-tab.active::after{left:10px;right:10px}
+  .bottom-dock{bottom:16px;gap:12px}
+  .dock-btn{width:54px;height:54px}
+  .dock-btn svg{width:24px;height:24px}
+  .dock-thumb{width:40px;height:40px}
+}
+
+/* Very small phones (≤360px): trim paddings further so the account row
+   never clips. */
+@media(max-width:360px){
+  .app-title{font-size:18px}
+  .app-logo{width:22px;height:22px}
+  .account-chip{gap:5px}
+  .credit-pill{padding:0 9px;gap:4px}
+  .recharge-btn{padding:0 11px;font-size:12px}
+  .logout-btn{padding:0 9px;font-size:12px}
+}
+
+/* ── Stock reference search (Pexels) ── */
+.stock-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.94);backdrop-filter:blur(20px);z-index:400;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto;animation:fadeIn 0.2s}
+.stock-panel{width:100%;max-width:940px;display:flex;flex-direction:column;gap:16px}
+.stock-head{display:flex;align-items:center;gap:12px}
+.stock-search{flex:1;display:flex;align-items:center;height:48px;background:var(--surface);border-radius:24px;padding:0 8px 0 16px;transition:background 0.15s,box-shadow 0.15s}
+.stock-search:focus-within{background:var(--surface2);box-shadow:0 0 0 1px rgba(255,255,255,0.08)}
+.stock-search svg{width:20px;height:20px;color:var(--text3);flex-shrink:0}
+.stock-search input{flex:1;min-width:0;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:16px;padding:0 12px;outline:none}
+.stock-search input::placeholder{color:var(--text3)}
+.stock-close{flex-shrink:0;height:48px;padding:0 20px;border:none;border-radius:24px;background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s}
+.stock-close:hover{background:var(--surface2)}
+.stock-toggle{flex-shrink:0;height:48px;padding:0 18px;border:none;border-radius:24px;background:var(--surface);color:var(--text3);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s}
+.stock-toggle:hover{background:var(--surface2)}
+.stock-toggle.active{background:var(--accent);color:#000}
+.stock-sources{display:flex;gap:2px;background:var(--surface);border-radius:20px;padding:4px;align-self:center}
+.stock-sources button{border:none;background:transparent;color:var(--text2);font-family:var(--font);font-size:13px;font-weight:600;padding:7px 20px;border-radius:16px;cursor:pointer;transition:background 0.15s,color 0.15s}
+.stock-sources button:hover{color:var(--text)}
+.stock-sources button.active{background:var(--accent);color:#000}
+.stock-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.stock-chips button{border:none;border-radius:16px;background:var(--surface);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:500;padding:8px 14px;cursor:pointer;transition:background 0.15s,color 0.15s}
+.stock-chips button:hover{background:var(--surface2);color:var(--text)}
+.stock-status{color:var(--text2);font-size:14px;text-align:center;padding:8px 0;line-height:1.5}
+.stock-grid{column-count:4;column-gap:12px}
+.stock-tile{position:relative;width:100%;margin:0 0 12px;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--surface);break-inside:avoid;display:block;transition:transform 0.16s,box-shadow 0.16s}
+.stock-tile:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.stock-tile img{display:block;width:100%;height:auto}
+.stock-tile-by{position:absolute;left:0;right:0;bottom:0;padding:16px 10px 8px;font-size:11px;color:#fff;background:linear-gradient(to top,rgba(0,0,0,0.72),transparent);opacity:0;transition:opacity 0.16s;pointer-events:none}
+.stock-tile:hover .stock-tile-by{opacity:1}
+.stock-tile.busy{pointer-events:none}
+.stock-tile-spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);color:#fff;font-size:13px;font-weight:600}
+.stock-foot{display:flex;justify-content:center}
+.stock-more{height:44px;padding:0 28px;border:none;border-radius:22px;background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s}
+.stock-more:hover{background:var(--surface2)}
+.stock-more:disabled{opacity:0.5;cursor:default}
+.stock-credit{text-align:center;color:var(--text3);font-size:12px;padding-bottom:8px}
+.stock-credit a{color:var(--text2)}
+@media(max-width:1024px){.stock-grid{column-count:3}}
+@media(max-width:640px){.stock-grid{column-count:2}.stock-panel{gap:12px}.stock-overlay{padding:16px 10px}}
+
+/* ---- Pinterest home feed ---- */
+/* Pin cards share #template-grid with curated cards. Keeping both sources in
+   one multicol container lets every pin occupy the next available masonry
+   space instead of starting a second row below the tallest curated column. */
+.pin-card{position:relative;width:100%;margin:0 0 16px;border-radius:var(--radius-card);overflow:hidden;cursor:pointer;background:var(--surface);break-inside:avoid;display:inline-block;vertical-align:top;transition:transform 0.18s,box-shadow 0.18s}
+.pin-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.pin-card:active{transform:translateY(0)}
+.pin-card img{display:block;width:100%;height:auto;min-height:120px;background:linear-gradient(135deg,#2a2a2a,#404040)}
+.pin-card.busy{pointer-events:none}
+.pin-card .pin-tag{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;letter-spacing:0.02em;opacity:0;transition:opacity 0.15s;pointer-events:none}
+.pin-card:hover .pin-tag{opacity:1}
+.pin-card:hover .template-fav-btn{opacity:1}
+.feed-status{text-align:center;color:var(--text2);font-size:13px;padding:10px 0 4px;line-height:1.5}
+.feed-status.retry{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.feed-sentinel{height:1px}
+@media(max-width:640px){.pin-card{margin-bottom:10px}}

@@ -1,0 +1,3 @@
+# Optional integration. Requires authorization to access platform content.
+# Install explicitly; also set PINTEREST_SCRAPE=1 to enable.
+gallery-dl>=1.29
