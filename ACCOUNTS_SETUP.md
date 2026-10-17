@@ -1,33 +1,33 @@
-# Email accounts and credits
+# 邮箱账号与积分
 
-Set `DATABASE_URL` to enable email signup, login, and per-user credit balances.
+**简体中文** | [English](ACCOUNTS_SETUP.en.md)
 
-| Configuration | Behavior |
+设置 `DATABASE_URL` 后，启用邮箱注册、登录和独立的用户积分余额。
+
+| 配置 | 行为 |
 |---|---|
-| `DATABASE_URL` is set | Email accounts with individual credit balances; generation deducts credits. |
-| `DATABASE_URL` is empty | Shared-account authentication and daily IP-based limits. |
+| 已设置 `DATABASE_URL` | 邮箱账号与独立积分余额，生成图片时扣除积分。 |
+| 未设置 `DATABASE_URL` | 共享账号认证与按 IP 的每日限流。 |
 
-Public registration is disabled by default, and new accounts receive no free credits.
-The purchase-credits button is a placeholder; payment processing is not connected.
+默认不开放注册，新账号不赠送积分。充值按钮为占位，尚未接入支付处理。
 
-## 1. Create a Postgres database
+## 1. 创建 Postgres 数据库
 
-Create a database with a provider such as [Neon](https://neon.tech), choosing a region
-appropriate for your users. Copy the connection string from your provider's dashboard.
-For deployments that need connection pooling, select the provider's pooled connection.
+可以使用 [Neon](https://neon.tech) 等数据库服务，选择适合用户的区域，
+在控制台复制连接串。需要连接池的部署应选择服务提供的连接池入口。
 
-An example connection string looks like this:
+连接串示例：
 
 ```text
 postgresql://user:password@database.example/dbname?sslmode=require
 ```
 
-The hostname and credentials above are placeholders. Keep the real connection string private.
+上面的域名和凭据均为占位符，请将真实连接串保存在私密配置中。
 
-## 2. Run locally
+## 2. 本地运行
 
-Follow the [quick start](README.md#quick-start) to create a virtual environment and install
-dependencies. Copy `.env.example` to `.env` if needed, then edit your private `.env`:
+按照[快速开始](README.md#快速开始)创建虚拟环境并安装依赖。
+如有需要，将 `.env.example` 复制为 `.env`，再编辑私密的 `.env`：
 
 ```bash
 API_BASE=https://image-provider.example/v1
@@ -37,74 +37,73 @@ REGISTRATION_ENABLED=0
 FREE_SIGNUP_CREDITS=0
 ```
 
-Replace the example endpoints and credentials with your own values. Load the file before starting:
+将占位地址和凭据替换为自己的值，加载配置后启动：
 
 ```bash
 set -a && source .env && set +a
 python3 server.py
 ```
 
-The startup log should include `Accounts mode ON`. Tables are created automatically on
-startup. The interface shows email login; public signup remains disabled until explicitly enabled.
+启动日志应包含 `Accounts mode ON`，首次启动会自动建表。
+界面会显示邮箱登录，公开注册仍需要显式开启。
 
-## 3. Configure production accounts
+## 3. 生产环境配置
 
-Set these values in your hosting platform's environment settings. For the
-[Linux deployment](deploy/DEPLOY.md), edit `/etc/ai-designer.env`:
+在托管平台的环境变量中配置；采用 [Linux 部署](deploy/DEPLOY.md)时，
+编辑 `/etc/ai-designer.env`：
 
-| Variable | Recommended configuration |
+| 变量 | 推荐配置 |
 |---|---|
-| `APP_ENV` | `production` |
-| `DATABASE_URL` | Your private Postgres connection string. |
-| `REGISTRATION_ENABLED` | `0` until you are ready to accept signups. |
-| `FREE_SIGNUP_CREDITS` | `0` unless you intentionally offer an initial allowance. |
-| `SESSION_SECRET` | A long random secret; required for production account mode. |
-| `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | Configure together if using registration verification. |
+| `APP_ENV` | `production`。 |
+| `DATABASE_URL` | 私密的 Postgres 连接串。 |
+| `REGISTRATION_ENABLED` | 准备好接受注册前保持 `0`。 |
+| `FREE_SIGNUP_CREDITS` | 默认 `0`，仅在明确需要赠送额度时调整。 |
+| `SESSION_SECRET` | 随机长密钥，生产账户模式必填。 |
+| `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | 使用注册验证时成对配置。 |
 
-Changing `SESSION_SECRET` invalidates existing login tokens. Configuring only one of the
-Turnstile keys prevents startup so verification cannot silently remain misconfigured.
+更换 `SESSION_SECRET` 会使已有登录令牌失效。Turnstile 只配置一个密钥时会拒绝启动，
+避免验证配置不完整却被误认为已生效。
 
-Shared `APP_USERNAME` / `APP_PASSWORD` credentials are no longer needed in account mode.
-You may configure `ADMIN_USERNAME` / `ADMIN_PASSWORD` for an administrator who bypasses
-credit charges and IP quotas. Keep administrator credentials private.
+账户模式不再需要共享的 `APP_USERNAME` / `APP_PASSWORD`。
+可以配置 `ADMIN_USERNAME` / `ADMIN_PASSWORD`，用于绕过积分扣费和 IP 限额的管理员账号。
+管理员凭据应保密。
 
-Restart or redeploy after changing environment settings. For the Linux example:
+修改环境变量后，需要重启或重新部署。Linux 示例：
 
 ```bash
 sudo systemctl restart ai-designer
 ```
 
-Pushing to GitHub alone does not update a manually managed server. See the
-[deployment guide](deploy/DEPLOY.md#5-updates-and-verification) for update steps.
+仅推送到 GitHub 不会更新手动维护的服务器，更新步骤见[部署指南](deploy/DEPLOY.md#5-更新与核验)。
 
-## Data model
+## 数据模型
 
-The following tables are created in Postgres:
+以下表在 Postgres 中创建：
 
-| Table | Purpose |
+| 表 | 用途 |
 |---|---|
-| `users` | Email, scrypt password hash, credit balance, verification status, and creation time. |
-| `credit_logs` | Auditable credit changes, including generation charges and refunds. |
-| `orders` | Order records reserved for payment integration. |
-| `email_codes` | Email verification codes; delivery requires additional integration. |
-| `auth_rate_events` | Persistent login and signup throttling across restarts. |
-| `generation_jobs` | Account-owned generation jobs, charges, and refund state. |
+| `users` | 邮箱、scrypt 密码哈希、积分余额、验证状态和创建时间。 |
+| `credit_logs` | 可审计的积分变动，包括生成扣费和退款。 |
+| `orders` | 为支付接入预留的订单记录。 |
+| `email_codes` | 邮箱验证码，发送流程需要额外接入。 |
+| `auth_rate_events` | 跨重启保留的登录与注册限流记录。 |
+| `generation_jobs` | 用户生成任务、归属、扣费和退款状态。 |
 
-## Credit behavior
+## 积分规则
 
-- Public signup is off and the initial credit balance is zero by default.
-- Set `REGISTRATION_ENABLED=1` when ready to accept users. Adjust `FREE_SIGNUP_CREDITS` separately for any promotional allowance.
-- Each generation deducts `GENERATION_COST` credits, defaulting to `1`. The charge and job creation share a database transaction.
-- Failed jobs are refunded atomically. Stale interrupted jobs can also be recovered and refunded during startup, polling, or a subsequent request.
-- Administrator accounts bypass credit charges. Local development without account mode can run without a quota.
-- An account without sufficient credits receives HTTP `402`, and the interface displays a request to top up.
-- Before enabling `REQUIRE_EMAIL_VERIFICATION=1`, implement and configure the email delivery workflow.
+- 默认不开放注册，新账号初始积分为零。
+- 准备好后设置 `REGISTRATION_ENABLED=1`；促销赠送额度通过 `FREE_SIGNUP_CREDITS` 单独调整。
+- 每次生成扣除 `GENERATION_COST` 积分，默认 `1`；扣费与任务创建在同一数据库事务中完成。
+- 失败任务原子退款，因中断遗留的超时任务也可以在启动、轮询或后续请求时恢复并退款。
+- 管理员不扣积分；未启用账户模式的本地开发可以不受额度限制。
+- 积分不足返回 HTTP `402`，界面提示充值。
+- 设置 `REQUIRE_EMAIL_VERIFICATION=1` 前，请先实现并配置邮件发送流程。
 
-## Account endpoints
+## 账号接口
 
-| Method | Path | Purpose |
+| 方法 | 路径 | 用途 |
 |---|---|---|
-| POST | `/api/register` | Email signup when `REGISTRATION_ENABLED=1`. |
-| POST | `/api/login` | Email, shared-account, or administrator login. |
-| GET | `/api/account` | Current account details and remaining credits. |
-| GET | `/api/quota` | Remaining allowance; account mode uses the credit balance. |
+| POST | `/api/register` | `REGISTRATION_ENABLED=1` 时开放邮箱注册。 |
+| POST | `/api/login` | 邮箱、共享账号或管理员登录。 |
+| GET | `/api/account` | 当前账户信息和积分余额。 |
+| GET | `/api/quota` | 剩余额度，账户模式使用积分余额。 |

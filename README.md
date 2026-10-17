@@ -1,207 +1,197 @@
 # SnapStyle
 
-**An AI image product focused on intuitive visual creation and thoughtful user experience.**
+**简体中文** | [English](README.en.md)
 
-SnapStyle explores how image generation can become a useful everyday creative product.
-Start with a product photo, browse style references, and create new product photography
-through a simple visual workflow.
+**一个以用户体验为中心的 AI 图像产品，探索更直观的视觉创作方式。**
 
-The focus is on the experience: helping people discover a look, create an image, and
-explore variations with clear interactions and useful defaults. Existing image models
-power the generation; product design shapes how people use them.
+SnapStyle 希望把图像生成融入日常创作：从一张产品照片出发，浏览喜欢的视觉风格，
+通过简单的操作生成新的商品摄影图。
 
-## The experience
+我们关注完整的产品体验：如何发现风格、如何开始创作、如何比较不同结果，
+以及如何通过清晰的交互和合理的默认设置，让图像模型的能力更容易被使用。
 
-- **Start with an image.** Upload a product photo and choose a visual reference without writing a detailed prompt.
-- **Discover a style.** Browse the built-in style library or connect optional image sources.
-- **Keep creating.** Explore variations and revisit saved results in your personal gallery.
+## 产品体验
 
-## Where it is heading
+- **从图片开始。** 上传产品照片，选择参考风格，无需编写复杂的提示词。
+- **发现喜欢的风格。** 浏览内置风格图库，也可以接入可选的在线图源。
+- **持续探索。** 生成不同版本，在个人图库中查看和保存创作结果。
 
-SnapStyle is an evolving product exploration. The aim is to build a richer creative
-ecosystem around image generation, with more image sources, reusable style collections,
-editing workflows, and flexible model integrations.
+## 我们想探索的方向
 
-Contributions in interaction design, visual design, creative workflows, and integrations
-are welcome, alongside code improvements. Product feedback and ideas from everyday use
-are especially valuable.
+SnapStyle 是一个持续演进的产品实践。我们希望围绕图像生成，逐步连接更多图源、
+可复用的风格库、图像编辑流程和模型服务，构建更丰富的创意生态。
 
-## Contact
+欢迎参与交互设计、视觉设计、创作流程、生态接入和代码改进。
+也欢迎分享实际使用中的感受、问题和想法。
 
-For collaboration, product feedback, or security reports: [binsson@outlook.com](mailto:binsson@outlook.com).
-For general questions and feature requests, please open a [GitHub issue](https://github.com/binsson/snapstyle/issues).
+## 联系方式
 
-## Quick start
+合作、产品反馈或安全问题：[binsson@outlook.com](mailto:binsson@outlook.com)。
+一般问题和功能建议，欢迎提交 [GitHub Issue](https://github.com/binsson/snapstyle/issues)。
 
-Use Python 3.12 and configure your own image generation service:
+## 快速开始
+
+使用 Python 3.12，并准备自己的图像生成服务：
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# Edit .env and set your own API_BASE and API_KEY.
-# The .example addresses are placeholders, not working endpoints.
+# 编辑 .env，填入自己的 API_BASE 和 API_KEY。
+# .example 地址只是占位符，不能直接调用。
 set -a && source .env && set +a
 python3 server.py
-# Open http://localhost:8080
+# 打开 http://localhost:8080
 ```
 
-The current interface and built-in style labels are in Chinese. This documentation is in English.
+当前应用界面和内置风格标签为中文。仓库文档提供中英文版本，可通过各文档顶部的链接切换。
 
-## How it works
+## 工作方式
 
 ```text
-Upload a product photo
-  → Browse the style cards and choose a reference
-  → Generate a new image in the background
-  → View saved results in your personal gallery
+上传产品照片
+  → 浏览风格卡片并选择参考图
+  → 后台生成新的图片
+  → 在个人图库中查看已保存的结果
 ```
 
-The product photo stays in memory until submitted; refreshing the page clears the upload.
-Completed results are stored in the browser's IndexedDB. The main workflow uses visual
-references without a text prompt editor. Only the apparel category is currently shown.
+提交前，产品照片保存在内存中，刷新页面会清空上传内容。
+生成结果通过浏览器 IndexedDB 保存在当前设备。主要创作流程由参考图驱动，
+不需要打开提示词编辑器。目前只展示服装品类。
 
-When a reference image is available, the optional vision model looks at that reference
-and produces one or two sentences about lighting, composition, and mood. The image model
-receives both the original product photo and the reference, with brief instructions to
-preserve the product. Older, detailed style descriptions are omitted from that path.
-Generating another variation does not reuse the previous photography brief.
+有参考图时，可选的视觉模型只分析参考图，用一两句话概括光线、构图和氛围。
+图像模型同时接收产品原图和参考图，并附带简短的产品保真要求；
+这条路径不再使用历史风格描述中的详细指令。再次生成时不会复用上一轮的摄影描述。
 
-If the guidance service fails or returns an overly long response, generation falls back
-to a short local brief. With the default image settings, no size or resolution parameter
-is sent; the requested orientation is described in the prompt, and final dimensions
-depend on the provider. The optional `toapis` adapter uses its own upload and task flow.
+摄影指导服务失败或返回过长内容时，会回退到简短的本地描述。
+默认图片配置不发送尺寸或分辨率参数，通过提示词表达画幅方向，最终尺寸由服务决定。
+可选的 `toapis` 适配使用独立的参考图上传与异步任务流程。
 
-## Optional image sources
+## 可选图源
 
-- **Built-in library:** included in the repository and available independently of online search.
-- **Pexels:** enabled when you provide your own `PEXELS_API_KEY`. Requests use the official API; the key stays on the server.
-- **Pinterest:** an optional gallery-dl integration, disabled by default. Once you have the required authorization, install `pip install -r requirements-pinterest.txt` and set `PINTEREST_SCRAPE=1` in your private environment. Installing the dependency alone does not enable it.
+- **内置图库：** 随仓库提供，不依赖在线搜索。
+- **Pexels：** 填入自己的 `PEXELS_API_KEY` 后启用，使用官方 API，密钥只在服务端保存。
+- **Pinterest：** 保留 gallery-dl 适配，默认关闭。取得所需授权后，安装 `pip install -r requirements-pinterest.txt`，再在私密环境变量中设置 `PINTEREST_SCRAPE=1`；仅安装依赖不会自动开启。
 
-Automated access to Pinterest must comply with its [Terms of Service](https://policy.pinterest.com/en/terms-of-service).
-Keep cookies, browser sessions, and proxy credentials out of the repository. The integration
-ignores gallery-dl's global configuration. Optional browser session access is configured
-locally through `PINTEREST_COOKIES_BROWSER`.
+Pinterest 的自动访问需要遵守其[服务条款](https://policy.pinterest.com/en/terms-of-service)。
+Cookie、浏览器登录态和代理凭据不能提交到仓库。集成会忽略 gallery-dl 的全局配置；
+如需使用浏览器登录态，通过本地 `PINTEREST_COOKIES_BROWSER` 配置。
 
-## Configuration
+## 环境配置
 
-Store real configuration in a private `.env` file or your hosting platform's environment settings.
+真实配置保存在私密的 `.env` 或托管平台的环境变量中。
 
-| Variable | Required | Purpose |
+| 变量 | 是否必需 | 用途 |
 |---|---|---|
-| `API_BASE` | Yes | Your image API base URL, usually including `/v1`; no private endpoint is built in. |
-| `API_KEY` | Yes | Your image service credential. |
-| `IMAGE_API_PROVIDER` | No | `openai` by default; `toapis` selects the alternative provider adapter. |
-| `MODEL` | No | Image model identifier; defaults to `gpt-image-2.5-sunburst`. Set a model supported by your provider. |
-| `IMAGE_SIZE_ENABLED` | No | Defaults to `0`; set to `1` to send pixel dimensions to the compatible image API. |
-| `IMAGE_RESOLUTION` | No | Empty by default; the `toapis` adapter accepts `1k`, `2k`, or `4k`. |
-| `REWRITE_API_BASE` | No | Vision and photography guidance endpoint; falls back to `API_BASE`. |
-| `REWRITE_API_KEY` | No | Guidance service credential; falls back to `API_KEY`. Set it separately when using another service. |
-| `REWRITE_MODEL` | No | Vision model for guidance, style analysis, and labeling; defaults to `gpt-5.6-luna-official`. |
-| `REWRITE_ENABLED` | No | Set to `0` to use local briefs for existing styles and disable new reference analysis. |
-| `PEXELS_API_KEY` | No | Enables Pexels search. |
-| `PINTEREST_SCRAPE` | No | Defaults to `0`; requires explicit opt-in and the optional dependency. |
-| `DATABASE_URL` | No | Enables email accounts and per-user credits; see [account setup](ACCOUNTS_SETUP.md). |
-| `REGISTRATION_ENABLED` | No | Defaults to `0`; controls public signup. |
-| `FREE_SIGNUP_CREDITS` | No | Initial credits for a new account; defaults to `0`. |
-| `GENERATION_COST` | No | Credits charged per generation; defaults to `1`. |
-| `SESSION_SECRET` | In production account mode | Random signing secret. Changing it invalidates existing sessions. |
-| `APP_USERNAME` / `APP_PASSWORD` | For shared-account authentication | Shared login when account mode is disabled. |
-| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | No | Administrator account that bypasses credit charges and IP limits. The password falls back to `APP_PASSWORD`. |
-| `APP_ENV` | In production | Set to `production` to enable production checks. |
-| `PORT` | No | Defaults to `8080`. |
-| `PUBLIC_BASE_URL` | No | Your public site URL; inferred from the request when empty. |
-| `STYLE_UPLOAD_CATEGORY` | No | Library ingestion subdirectory; defaults to `apparel`. |
+| `API_BASE` | 是 | 自己的图片服务基础地址，通常包含 `/v1`；代码不内置私有地址。 |
+| `API_KEY` | 是 | 图片服务密钥。 |
+| `IMAGE_API_PROVIDER` | 否 | 默认 `openai`；`toapis` 选择另一种服务适配。 |
+| `MODEL` | 否 | 图片模型标识，默认 `gpt-image-2.5-sunburst`；请根据服务支持的模型调整。 |
+| `IMAGE_SIZE_ENABLED` | 否 | 默认 `0`；设为 `1` 才向兼容图片接口发送像素尺寸。 |
+| `IMAGE_RESOLUTION` | 否 | 默认留空；`toapis` 适配支持 `1k`、`2k`、`4k`。 |
+| `REWRITE_API_BASE` | 否 | 视觉分析与摄影指导服务地址，留空共用 `API_BASE`。 |
+| `REWRITE_API_KEY` | 否 | 摄影指导服务密钥，留空共用 `API_KEY`；服务不同时应单独配置。 |
+| `REWRITE_MODEL` | 否 | 用于摄影指导、风格分析和标签生成，默认 `gpt-5.6-luna-official`。 |
+| `REWRITE_ENABLED` | 否 | 设为 `0` 后，已有风格使用本地描述，并停用新参考图分析。 |
+| `PEXELS_API_KEY` | 否 | 启用 Pexels 搜索。 |
+| `PINTEREST_SCRAPE` | 否 | 默认 `0`；需要显式开启并安装可选依赖。 |
+| `DATABASE_URL` | 否 | 启用邮箱账号与独立积分，见[账号配置](ACCOUNTS_SETUP.md)。 |
+| `REGISTRATION_ENABLED` | 否 | 默认 `0`，控制是否开放注册。 |
+| `FREE_SIGNUP_CREDITS` | 否 | 新账号初始积分，默认 `0`。 |
+| `GENERATION_COST` | 否 | 每次生成消耗的积分，默认 `1`。 |
+| `SESSION_SECRET` | 生产账户模式必需 | 随机签名密钥，更换后已有登录会失效。 |
+| `APP_USERNAME` / `APP_PASSWORD` | 共享账号认证时需要 | 未启用账户模式时的共享登录配置。 |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | 否 | 管理员账号，绕过积分扣费和 IP 限额；密码留空时回退到 `APP_PASSWORD`。 |
+| `APP_ENV` | 生产环境必需 | 设为 `production`，启用生产环境检查。 |
+| `PORT` | 否 | 默认 `8080`。 |
+| `PUBLIC_BASE_URL` | 否 | 自己的网站地址，留空时从请求推导。 |
+| `STYLE_UPLOAD_CATEGORY` | 否 | 图库导入子目录，默认 `apparel`。 |
 
-All example endpoints are placeholders. Supply compatible services and model identifiers
-for your own deployment. Changing a local `.env` does not update a hosted environment.
+所有示例地址均为占位符，请填写适合自己部署的兼容服务和模型。
+修改本地 `.env` 不会更新托管平台的配置。
 
-## Deployment
+## 部署
 
-See the guides for [Linux servers](deploy/DEPLOY.md) and [Render](deploy/RENDER.md).
+查看 [Linux 服务器部署](deploy/DEPLOY.md)或 [Render 部署](deploy/RENDER.md)。
 
-- Configure API endpoints, credentials, database connections, and account settings through private environment variables.
-- Set `APP_ENV=production` and configure authentication. Production account mode also requires a random `SESSION_SECRET`.
-- Serve only the frontend files and style image directory. Do not expose the project root as a static directory.
-- Keep runtime databases and uploaded images on persistent storage and back them up before deployment updates.
+- 通过私密环境变量配置 API 地址、密钥、数据库连接和账号。
+- 生产环境设置 `APP_ENV=production` 并配置认证；生产账户模式还必须设置随机的 `SESSION_SECRET`。
+- 仅提供前端文件和风格图片目录，不要将项目根目录作为静态站点目录。
+- 为运行数据库和上传图片配置持久化存储，部署更新前先备份。
 
-## Project structure
+## 项目结构
 
-| File | Role |
+| 文件 | 用途 |
 |---|---|
-| `server.py` | FastAPI backend, image service adapters, authentication, and explicit static routes. |
-| `db.py` | SQLite storage for legacy sessions, rate limits, styles, favorites, and generation jobs. |
-| `userdb.py` | Postgres accounts, credits, authentication throttles, and account-owned generation jobs. |
-| `app.js` | Framework-free frontend and browser-side result storage. |
-| `index.html` / `style.css` | Application markup and styles. |
-| `style_assets.json` | Versioned source of truth for the built-in style library. |
-| `reference_uploads/styles/` | Built-in style images and thumbnails. |
-| `scripts/ingest_styles.py` | Compress local references, analyze their style, and add them to SQLite. |
-| `scripts/relabel_styles.py` | Generate missing Chinese style labels. |
-| `scripts/recompress_styles.py` | Recompress existing PNG references as JPEG. |
-| `scripts/gen_thumbnails.py` | Generate style card thumbnails. |
-| `scripts/export_styles.py` | Export SQLite style assets to `style_assets.json`. |
+| `server.py` | FastAPI 后端、图片服务适配、认证和静态文件白名单。 |
+| `db.py` | SQLite 存储：旧版会话、限流、风格、收藏和生成任务。 |
+| `userdb.py` | Postgres 账号、积分、认证限流和用户生成任务。 |
+| `app.js` | 无框架前端和浏览器端结果存储。 |
+| `index.html` / `style.css` | 应用页面与样式。 |
+| `style_assets.json` | 内置风格图库的版本化数据源。 |
+| `reference_uploads/styles/` | 内置风格图片和缩略图。 |
+| `scripts/ingest_styles.py` | 压缩本地参考图，分析风格并写入 SQLite。 |
+| `scripts/relabel_styles.py` | 为已有风格补充中文标签。 |
+| `scripts/recompress_styles.py` | 将已有 PNG 参考图重新压缩为 JPEG。 |
+| `scripts/gen_thumbnails.py` | 生成风格卡片缩略图。 |
+| `scripts/export_styles.py` | 将 SQLite 风格数据导出为 `style_assets.json`。 |
 
-## API overview
+## API 概览
 
-| Route | Purpose |
+| 路由 | 用途 |
 |---|---|
-| `GET /api/auth-status` | Authentication requirements and available image sources. |
-| `POST /api/login` | Shared, administrator, or email account login; returns a session token. |
-| `POST /api/register` | Email signup when registration is enabled. |
-| `GET /api/account` | Current account information and credit balance. |
-| `GET /api/style-assets` | Visible style assets. |
-| `GET /api/favorite-counts?ids=a,b,c` | Favorite counts, combining the display baseline and user deltas. |
-| `POST /api/favorite-toggle` | Apply an add/remove action and return the updated count. |
-| `GET /api/stock/search` | Search a configured online image source. |
-| `POST /api/stock/use` | Import an online reference into the local library. |
-| `POST /api/generate` | Synchronous generation endpoint. |
-| `POST /api/generate-async` | Submit a background job and return its ID and remaining allowance. |
-| `GET /api/generate-result/{id}` | Poll for `pending`, `done`, `error`, or `not_found`. |
-| `GET /api/quota` | Remaining allowance; account mode uses credits. |
+| `GET /api/auth-status` | 认证要求和可用图源。 |
+| `POST /api/login` | 共享账号、管理员或邮箱登录，返回会话令牌。 |
+| `POST /api/register` | 开放注册时创建邮箱账号。 |
+| `GET /api/account` | 当前账户信息与积分余额。 |
+| `GET /api/style-assets` | 可见风格列表。 |
+| `GET /api/favorite-counts?ids=a,b,c` | 获取展示基数与用户增量合成的收藏数。 |
+| `POST /api/favorite-toggle` | 添加或取消收藏，返回更新后的数量。 |
+| `GET /api/stock/search` | 搜索已配置的在线图源。 |
+| `POST /api/stock/use` | 将在线参考图导入本地图库。 |
+| `POST /api/generate` | 同步图片生成。 |
+| `POST /api/generate-async` | 提交后台任务，返回任务 ID 与剩余额度。 |
+| `GET /api/generate-result/{id}` | 轮询 `pending`、`done`、`error` 或 `not_found`。 |
+| `GET /api/quota` | 剩余额度；账户模式使用积分。 |
 
-## Data and persistence
+## 数据与持久化
 
-The application uses local SQLite (`aid.db`) and, optionally, Postgres for email accounts.
-SQLite style assets are synchronized from the versioned `style_assets.json` on startup
-through `db.migrate_from_json`.
+应用使用本地 SQLite（`aid.db`），邮箱账号模式另外使用 Postgres。
+启动时通过 `db.migrate_from_json`，从版本化的 `style_assets.json` 同步内置风格数据。
 
-| Data | Storage and behavior |
+| 数据 | 存储与行为 |
 |---|---|
-| Legacy sessions | SQLite; current login flows use signed tokens whose validity depends on signing secrets and expiry. |
-| IP rate limits | SQLite; persistence depends on the underlying disk. |
-| Built-in styles | JSON and images in Git, loaded into SQLite at startup. |
-| Favorite deltas | SQLite; persistence depends on the underlying disk. |
-| Imported online references | Local image files and SQLite metadata; excluded from Git. |
-| Email accounts and credits | Postgres when `DATABASE_URL` is configured. |
-| Account generation jobs | Postgres, including ownership, charges, and refund state. |
-| Personal gallery | Browser IndexedDB; stored on the user's device. |
+| 旧版会话 | SQLite；当前登录使用签名令牌，有效性取决于签名密钥和过期时间。 |
+| IP 限流 | SQLite；持久性取决于底层磁盘。 |
+| 内置风格 | Git 中的 JSON 与图片，启动时导入 SQLite。 |
+| 收藏增量 | SQLite；持久性取决于底层磁盘。 |
+| 在线导入参考图 | 本地图片与 SQLite 元数据，不提交到 Git。 |
+| 邮箱账户与积分 | 配置 `DATABASE_URL` 后存入 Postgres。 |
+| 账户生成任务 | Postgres，包含任务归属、扣费和退款状态。 |
+| 个人图库 | 浏览器 IndexedDB，保存在用户当前设备。 |
 
-Displayed favorite counts include a generated baseline of 30–280 plus the stored user
-delta. They are not a count of distinct users.
+展示收藏数由 30–280 的生成基数加上用户增量组成，不代表独立用户数。
 
-## Maintaining the style library
+## 维护风格图库
 
 ```text
-Add reference images to reference_uploads/styles_inbox/
+将参考图放入 reference_uploads/styles_inbox/
   → python3 scripts/ingest_styles.py --concurrency 2
-  → Compress to JPEG, up to 1024 px on the longest side
-  → Analyze the style and store metadata in SQLite
-  → Copy images to reference_uploads/styles/<category>/
-  → python3 scripts/relabel_styles.py  (optional)
+  → 压缩为最长边不超过 1024 px 的 JPEG
+  → 分析风格，将元数据写入 SQLite
+  → 图片保存至 reference_uploads/styles/<category>/
+  → python3 scripts/relabel_styles.py（可选）
   → python3 scripts/export_styles.py
-  → Review and commit style_assets.json and the corresponding images
-  → Deploy; startup synchronizes SQLite from the JSON export
+  → 检查并提交 style_assets.json 和对应图片
+  → 部署，启动时从 JSON 同步 SQLite
 ```
 
-Ingestion retries each image up to three times after transient errors. Adjust concurrency
-to your provider's limits. Style cards prefer matching `.t400.webp` thumbnails while the
-original reference is sent for image generation. Names come from `styleSpec.chineseLabel`,
-with frontend fallbacks for missing labels. The `shotIntent` field guides card proportions
-and generation prompts.
+遇到临时错误时，每张图片最多尝试三次，请根据服务限额调整并发。
+卡片优先使用对应的 `.t400.webp` 缩略图，生成时仍传入原参考图。
+名称来自 `styleSpec.chineseLabel`，缺失时由前端兜底；`shotIntent` 用于控制卡片比例和生成提示。
 
-## Development checks
+## 开发检查
 
 ```bash
 pip install -r requirements-dev.txt
@@ -210,38 +200,35 @@ python3 -m py_compile server.py db.py userdb.py
 node --check app.js
 ```
 
-Tests use placeholder credentials and mocked providers. They do not require live API calls.
+测试使用占位凭据和模拟服务，不需要真实 API 调用。
 
-## Known limitations
+## 已知限制
 
-- Deployment updates must preserve runtime databases and user-imported images. Back up these files and any external database.
-- Some older references have no generated label and use a generic frontend fallback.
-- Favorite counts include a synthetic baseline; they do not measure unique users.
-- Legacy quotas are IP-based, so users behind the same NAT can share an allowance. Configure trusted proxy handling for your environment.
-- Ingested references are compressed to a maximum long edge of 1024 px and are not intended as print originals.
-- Only the apparel category is currently visible; other categories remain placeholders.
-- Credit purchase UI is a placeholder. Payment integration and email delivery still need deployment-specific implementation.
+- 部署更新需要保留运行数据库和用户导入图片，并备份这些文件及外部数据库。
+- 部分早期参考图没有生成标签，使用前端的通用标签兜底。
+- 收藏数包含模拟基数，不能衡量独立用户数量。
+- 旧版限流按 IP 计数，共享 NAT 的用户可能共用额度；需根据部署环境正确配置可信代理。
+- 导入参考图最长边压缩到 1024 px，不适合作为印刷原图。
+- 当前仅展示服装品类，其余类目仍为占位。
+- 充值界面为占位，支付接入和邮件发送仍需结合实际部署完成。
 
-## Roadmap
+## 路线图
 
-- [ ] Refine the visual creation flow and improve reference selection.
-- [ ] Expand style curation and discovery across more product categories.
-- [ ] Add targeted editing, including masks and background changes.
-- [ ] Recommend styles based on the uploaded product.
-- [ ] Explore multiple candidate images for easier comparison, with clear generation costs.
-- [ ] Improve account experiences and replace synthetic favorite baselines with meaningful activity data.
-- [ ] Strengthen backup and recovery workflows.
-- [ ] Extend image source and model integrations to support a broader creative ecosystem.
+- [ ] 优化视觉创作流程和参考图选择体验。
+- [ ] 扩展更多产品品类的风格整理与发现能力。
+- [ ] 增加蒙版编辑、换背景等局部编辑能力。
+- [ ] 根据上传产品推荐合适风格。
+- [ ] 探索多张候选图的比较体验，并明确展示生成成本。
+- [ ] 完善账号体验，用有意义的真实活动数据替代模拟收藏基数。
+- [ ] 加强备份与恢复流程。
+- [ ] 扩展图源和模型接入，支持更丰富的创意生态。
 
-## Release notes
+## 发布说明
 
-The repository contains the application and built-in style library. Runtime uploads,
-cookies, credentials, logs, backups, and databases are excluded. Keep private configuration
-in environment variables and review staged files before publishing.
+仓库包含应用代码和内置风格图库。用户上传、Cookie、凭据、日志、备份和运行数据库不随代码发布。
+真实配置应通过环境变量管理，发布前检查暂存区内容。
 
-This repository starts from a sanitized snapshot. Do not merge private development history
-that could reintroduce deployment details. Review hosted workflow logs and release
-attachments separately before changing repository visibility.
+本仓库从清理后的文件快照开始，请避免合并可能重新带入部署信息的私有开发历史。
+更改仓库可见性前，还应单独检查托管平台的工作流日志和发布附件。
 
-An open-source license has not yet been selected. A `LICENSE` file must be added before
-presenting the project as an open-source release.
+目前尚未选择开源许可证，正式以开源项目发布前需要添加 `LICENSE`。
